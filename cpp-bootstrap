@@ -1,0 +1,106 @@
+#!/bin/bash
+
+source .config
+
+ROOT=$(pwd)
+DOWNLOAD_DIR=${ROOT}/.download
+MODULES_DIR=${ROOT}/modules
+SRC_DIR=${ROOT}/src
+INCLUDE_DIR=${ROOT}/include
+TESTS_DIR=${ROOT}/tests
+BUILD_DIR=${ROOT}/build
+TEMPLATES_DIR=${HOME}/.cpp-bootstrap
+MODULES=(gtest boost)
+declare -A URLS=(
+    ["gtest"]="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
+    ["boost"]="https://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.gz"
+)
+
+
+function isEnvProper() {
+    local isProper=0
+    
+    declare -a dependencies=(cmake) 
+
+    for dep in ${dependencies[@]}; do
+        if [ -z $(which ${dep}) ]; then
+            echo "${dep} is not available!"
+            isProper=1
+        fi
+    done
+
+    return isProper
+}
+
+function createDirectories() {
+    mkdir -p ${DOWNLOAD_DIR}
+    mkdir -p ${MODULES_DIR}
+    mkdir -p ${SRC_DIR}
+    mkdir -p ${INCLUDE_DIR}
+    mkdir -p ${TESTS_DIR}
+    mkdir -p ${BUILD_DIR}
+}
+
+function downloadModule() {
+    name="${1}"
+
+    url="${URLS[$name]}"
+    echo "Downloading ${name}"
+    wget ${url} -P ${DOWNLOAD_DIR}/${name} 
+}
+
+function installModule() {
+    name="${1}"
+
+    declare -A installCommands=(
+        ["gtest"]=installGtest
+        ["boost"]=installBoost
+    )
+
+    echo "Installing ${name}"
+    ${installCommands[${name}]}
+}
+
+function cutOutInstallRules() {
+    find ${MODULES_DIR}/ -name CMakeLists.txt -print0 | xargs -0 sed -i '/# Install rules/,+5d'
+}
+
+function installGtest() {
+    echo "From install gtest"
+    tar -xf ${DOWNLOAD_DIR}/gtest/*.tar.gz -C ${MODULES_DIR}
+    cutOutInstallRules
+}
+
+function installBoost() {
+    tar -xf ${DOWNLOAD_DIR}/boost/*.tar.gz -C ${MODULES_DIR}
+    BOOST_DIR=${MODULES_DIR}/boost_1_63_0
+    cd ${BOOST_DIR}
+    ./bootstrap.sh --prefix=${BOOST_DIR}
+    ./b2 install
+    cd ${ROOT}
+}
+
+function downloadModules() {
+    for m in ${MODULES[@]}; do
+        downloadModule ${m}
+    done
+}
+
+function installModules() {
+    for m in ${MODULES[@]}; do
+        installModule ${m}
+    done
+}
+
+function prepareTemplates() {
+    cp -r ${TEMPLATES_DIR}/* .
+    sed -i 's/%PROJ_NAME%/'${PROJ_NAME}'/g' CMakeLists.txt Makefile
+    sed -i 's/%CPP_STD%/'${CPP_STD}'/g' CMakeLists.txt Makefile
+}
+
+if [ isEnvProper ]; then
+    createDirectories
+    prepareTemplates
+    downloadModules
+    installModules
+fi
