@@ -2,6 +2,12 @@
 
 Utility preparing environment for C++ CMake project, using Google Test and Boost libraries.
 
+## Tests
+To execute script tests:
+```
+./tests.sh
+```
+
 ## Installation
 ```
 ./install.sh BIN_DIRECTORY
