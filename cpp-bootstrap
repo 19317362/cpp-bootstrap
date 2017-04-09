@@ -16,7 +16,6 @@ declare -A URLS=(
     ["boost"]="https://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.gz"
 )
 
-
 function isEnvProper() {
     local isProper=0
     
@@ -29,7 +28,7 @@ function isEnvProper() {
         fi
     done
 
-    return isProper
+    return ${isProper}
 }
 
 function createDirectories() {
@@ -58,7 +57,8 @@ function installModule() {
     )
 
     echo "Installing ${name}"
-    ${installCommands[${name}]}
+    command=${installCommands[${name}]} 
+    [[ ! -z ${command} ]] && ${command} || return 1
 }
 
 function cutOutInstallRules() {
@@ -66,7 +66,6 @@ function cutOutInstallRules() {
 }
 
 function installGtest() {
-    echo "From install gtest"
     tar -xf ${DOWNLOAD_DIR}/gtest/*.tar.gz -C ${MODULES_DIR}
     cutOutInstallRules
 }
@@ -98,11 +97,23 @@ function prepareTemplates() {
     sed -i 's/%CPP_STD%/'${CPP_STD}'/g' CMakeLists.txt Makefile
 }
 
-if [ ! isEnvProper ]; then
-    echo "Can't proceed without needed dependencies. Install them and try again."
-fi
+function main() {
+    if [ ! isEnvProper ]; then
+        echo "Can't proceed without needed dependencies. Install them and try again."
+    fi
 
-createDirectories
-prepareTemplates
-downloadModules
-installModules
+    echo "Preparing environment..."
+    createDirectories
+    prepareTemplates
+    downloadModules
+    installModules
+}
+
+echo "$0" | grep -Eq "^.*/cpp-bootstrap$"
+isCalledDirectly=$?
+
+if [ ${isCalledDirectly} = 0 ]; then
+    main
+else 
+    echo "Sourcing cpp-bootstrap..."
+fi
