@@ -64,8 +64,7 @@ function executeTestCases() {
             printGreen "Passed" | tee -a ${TEST_LOG}
         fi
     done
-
-      
+ 
     printf "\nTests result:"
     
     [[ ${failures} -gt 0 ]] && printRed "Tests failed!" || printGreen "Tests passed!"

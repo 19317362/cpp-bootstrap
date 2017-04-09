@@ -2,6 +2,21 @@
 
 Utility preparing environment for C++ CMake project, using Google Test and Boost libraries.
 
+The environment will have this structure:
+|-- CMakeLists.txt
+|-- Makefile
+|-- build/
+|-- include/
+|-- modules/
+|   |-- boost\_1\_63\_0/
+|   -- googletest-release-1.8.0/
+|-- src/
+|   -- Hello.cpp
+-- tests/
+    -- HelloTest.cp
+
+Makefile is being used just a top level script which wraps everything up.
+
 ## Tests
 To execute script tests:
 ```
