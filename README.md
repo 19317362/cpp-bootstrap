@@ -15,7 +15,7 @@ The environment will have this structure:
 - tests/
     - HelloTest.cpp
 
-Makefile is being used just a top level script which wraps everything up.
+Makefile is being used just as a top level script which wraps everything up.
 
 ## Tests
 To execute script tests:
@@ -44,6 +44,7 @@ vi .config
 PROJ_NAME=YOUR_PROJECT_NAME
 CPP_STD=[98, 11, 14]
 ```
+Having .config prepared, execute:
 
 ```
 cpp-bootstrap
