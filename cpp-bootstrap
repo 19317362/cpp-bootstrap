@@ -20,7 +20,7 @@ declare -A URLS=(
 function isEnvProper() {
     local isProper=0
     
-    declare -a dependencies=(cmake) 
+    declare -a dependencies=(cmake sed gcc g++)
 
     for dep in ${dependencies[@]}; do
         if [ -z $(which ${dep}) ]; then
@@ -98,9 +98,11 @@ function prepareTemplates() {
     sed -i 's/%CPP_STD%/'${CPP_STD}'/g' CMakeLists.txt Makefile
 }
 
-if [ isEnvProper ]; then
-    createDirectories
-    prepareTemplates
-    downloadModules
-    installModules
+if [ ! isEnvProper ]; then
+    echo "Can't proceed without needed dependencies. Install them and try again."
 fi
+
+createDirectories
+prepareTemplates
+downloadModules
+installModules

@@ -1,18 +1,17 @@
-cpp-bootstrap
-#############
+# cpp-bootstrap
 
 Utility preparing environment for C++ CMake project, using Google Test and Boost libraries.
 
-# Installation
+## Installation
 ```
 ./install.sh BIN_DIRECTORY
 ```
 
 It will copy _cpp-boostrap_ executable to BIN_DIRECTORY. Make sure BIN_DIRECTORY is in your PATH variable. 
 
-Additionally, script will create .cpp-bootstrap directory in your HOME and fill it with unnecessary template files. 
+Additionally, script will create .cpp-bootstrap directory in your HOME and will fill it with unnecessary template files. 
 
-# Usage
+## Usage
 ```
 mkdir myproject 
 cd myproject
