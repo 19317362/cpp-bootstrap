@@ -2,6 +2,11 @@
 
 Utility preparing environment for C++ CMake project, using Google Test and Boost libraries.
 
+The main goal is to prepare an isolated environment with no need for root privileges. Libraries are located in the
+project directory _modules_.
+
+If you don't trust your package manager, use this script - No System Pollution™ guaranteed! (or try using Docker)
+
 The environment will have this structure:
 - CMakeLists.txt
 - Makefile
@@ -30,7 +35,7 @@ To execute script tests:
 
 It will copy _cpp-boostrap_ executable to BIN_DIRECTORY. Make sure BIN_DIRECTORY is in your PATH variable. 
 
-Additionally, script will create .cpp-bootstrap directory in your HOME and will fill it with unnecessary template files. 
+Additionally, script will create .cpp-bootstrap directory in your HOME and will fill it with necessary template files. 
 
 ## Usage
 ```
@@ -38,7 +43,7 @@ mkdir myproject
 cd myproject
 vi .config
 ```
-.config file is a must, it should contain this content:
+.config file is a must, it should contain following content:
 
 ```
 PROJ_NAME=YOUR_PROJECT_NAME
